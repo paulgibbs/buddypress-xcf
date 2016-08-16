@@ -2,9 +2,9 @@
 /**
  * Checkbox Acceptance Type
  */
-if (!class_exists('Bxcft_Field_Type_CheckboxAcceptance'))
+if (!class_exists('BP_XProfile_Field_Type_Confirmation'))
 {
-    class Bxcft_Field_Type_CheckboxAcceptance extends BP_XProfile_Field_Type
+    class BP_XProfile_Field_Type_Confirmation extends BP_XProfile_Field_Type
     {
         public function __construct() {
             parent::__construct();

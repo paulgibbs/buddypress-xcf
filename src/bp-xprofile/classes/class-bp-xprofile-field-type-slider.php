@@ -1,22 +1,22 @@
 <?php
 /**
- * NumberMinMax Type
+ * Slider Type
  */
-if (!class_exists('Bxcft_Field_Type_NumberMinMax'))
+if (!class_exists('BP_XProfile_Field_Type_Slider'))
 {
-    class Bxcft_Field_Type_NumberMinMax extends BP_XProfile_Field_Type
+    class BP_XProfile_Field_Type_Slider extends BP_XProfile_Field_Type
     {
         public function __construct() {
             parent::__construct();
 
-            $this->name = __( 'Number within min/max values (HTML5 field)', 'bxcft' );
+            $this->name = __( 'Range input (HTML5 field)', 'bxcft' );
 
             $this->accepts_null_value = true;
             $this->supports_options = true;
 
             $this->set_format( '/^\d+\.?\d*$/', 'replace' );
 
-            do_action( 'bp_xprofile_field_type_number_minmax', $this );
+            do_action( 'bp_xprofile_field_type_slider', $this );
         }
 
         public function admin_field_html (array $raw_properties = array ())
@@ -24,7 +24,8 @@ if (!class_exists('Bxcft_Field_Type_NumberMinMax'))
             global $field;
 
             $args = array(
-                'type' => 'number'
+                'type' => 'range',
+                'class' => 'bxcft-slider'
             );
 
             $options = $field->get_children( true );
@@ -60,7 +61,8 @@ if (!class_exists('Bxcft_Field_Type_NumberMinMax'))
 
 
             $args = array(
-                'type'  => 'number',
+                'type'  => 'range',
+                'class' => 'bxcft-slider',
                 'value' => bp_get_the_profile_field_edit_value(),
             );
             $options = $field->get_children( true );
@@ -90,7 +92,7 @@ if (!class_exists('Bxcft_Field_Type_NumberMinMax'))
             do_action( bp_get_the_profile_field_errors_action() );
             // Input.
         ?>
-            <input <?php echo $html; ?> />
+            <input <?php echo $html; ?> /><span id="output-field_<?php echo $field->id; ?>"></span>
         <?php
         }
 
@@ -141,7 +143,7 @@ if (!class_exists('Bxcft_Field_Type_NumberMinMax'))
             }
         ?>
             <div id="<?php echo esc_attr( $type ); ?>" class="postbox bp-options-box" style="<?php echo esc_attr( $class ); ?> margin-top: 15px;">
-                <h3><?php esc_html_e( 'Write min and max values. You can leave any field blank if you want.', 'bxcft' ); ?></h3>
+                <h3><?php esc_html_e( 'Write min and max values.', 'bxcft' ); ?></h3>
                 <div class="inside">
                     <p>
                         <label for="<?php echo esc_attr( "{$type}_option1" ); ?>">
@@ -158,8 +160,8 @@ if (!class_exists('Bxcft_Field_Type_NumberMinMax'))
                 </div>
             </div>
             <script>
-                var error_msg_number_minmax = '<?php esc_html_e("Min value cannot be bigger than max value.", "bxcft"); ?>',
-                    error_msg_number_minmax_empty = '<?php esc_html_e("You have to fill at least one field.", "bxcft"); ?>';
+                var error_msg_slider = '<?php esc_html_e("Min value cannot be bigger than max value.", "bxcft"); ?>',
+                    error_msg_slider_empty = '<?php esc_html_e("You have to fill the two fields.", "bxcft"); ?>';
             </script>
         <?php
         }
@@ -199,15 +201,15 @@ if (!class_exists('Bxcft_Field_Type_NumberMinMax'))
             }
 
             /**
-             * bxcft_number_minmax_display_filter
+             * bxcft_slider_display_filter
              *
-             * Use this filter to modify the appearance of 'Number within
-             * min/max values' field value.
+             * Use this filter to modify the appearance of 'Slider'
+             * field value.
              * @param  $new_field_value Value of field
              * @param  $field_id Id of field.
              * @return  Filtered value of field.
              */
-            return apply_filters('bxcft_number_minmax_display_filter',
+            return apply_filters('bxcft_slider_display_filter',
                 $new_field_value, $field_id);
         }
     }

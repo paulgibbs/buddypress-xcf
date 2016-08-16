@@ -1,32 +1,24 @@
 <?php
 /**
- * Multiselect Custom Post Type Type
+ * Select Custom Taxonomy Type
  */
-if (!class_exists('Bxcft_Field_Type_MultiSelectCustomPostType'))
+if (!class_exists('BP_XProfile_Field_Type_Taxonomy'))
 {
-    class Bxcft_Field_Type_MultiSelectCustomPostType extends BP_XProfile_Field_Type
+    class BP_XProfile_Field_Type_Taxonomy extends BP_XProfile_Field_Type
     {
         public function __construct() {
             parent::__construct();
 
-            $this->name             = _x( 'Custom Post Type Multiselector', 'xprofile field type', 'bxcft' );
+            $this->name = _x( 'Custom Taxonomy Selector', 'xprofile field type', 'bxcft' );
 
-            $this->supports_multiple_defaults   = true;
-            $this->supports_options             = true;
+            $this->supports_options = true;
 
             $this->set_format( '/^.+$/', 'replace' );
-            do_action( 'bp_xprofile_field_type_multiselect_custom_post_type', $this );
+            do_action( 'bp_xprofile_field_type_select_custom_taxonomy', $this );
         }
 
         public function admin_field_html( array $raw_properties = array() ) {
-            $html = $this->get_edit_field_html_elements( array_merge(
-                array(
-                    'multiple' => 'multiple',
-                    'id'       => bp_get_the_profile_field_input_name() . '[]',
-                    'name'     => bp_get_the_profile_field_input_name() . '[]',
-                ),
-                $raw_properties
-            ) );
+            $html = $this->get_edit_field_html_elements( $raw_properties );
         ?>
             <select <?php echo $html; ?>>
                 <?php bp_the_profile_field_options(); ?>
@@ -75,24 +67,24 @@ if (!class_exists('Bxcft_Field_Type_MultiSelectCustomPostType'))
                 }
             }
 
-            $post_types = get_post_types(array(
+            $taxonomies = get_taxonomies(array(
                 'public'    => true,
                 '_builtin'  => false,
             ));
         ?>
             <div id="<?php echo esc_attr( $type ); ?>" class="postbox bp-options-box" style="<?php echo esc_attr( $class ); ?> margin-top: 15px;">
         <?php
-            if (!$post_types):
+            if (!$taxonomies):
         ?>
-                <h3><?php _e('There is no custom post type. You need to create at least one to use this field.', 'bxcft'); ?></h3>
+                <h3><?php _e('There is no custom taxonomy. You need to create at least one to use this field.', 'bxcft'); ?></h3>
         <?php else : ?>
-                <h3><?php esc_html_e( 'Select a custom post type:', 'bxcft' ); ?></h3>
+                <h3><?php esc_html_e( 'Select a custom taxonomy:', 'bxcft' ); ?></h3>
                 <div class="inside">
                     <p>
-                        <?php _e('Select a custom post type:', 'bxcft'); ?>
+                        <?php _e('Select a custom taxonomy:', 'bxcft'); ?>
                         <select name="<?php echo esc_attr( "{$type}_option[1]" ); ?>" id="<?php echo esc_attr( "{$type}_option[1]" ); ?>">
                             <option value=""><?php _e('Select...', 'bxcft'); ?></option>
-                        <?php foreach($post_types as $k=>$v): ?>
+                        <?php foreach($taxonomies as $k=>$v): ?>
                             <option value="<?php echo $k; ?>"<?php if ($options[0]->name == $k): ?> selected="selected"<?php endif; ?>><?php echo $v; ?></option>
                         <?php endforeach; ?>
                         </select>
@@ -117,18 +109,12 @@ if (!class_exists('Bxcft_Field_Type_MultiSelectCustomPostType'))
                 $raw_properties['required'] = 'required';
             }
 
-            $html = $this->get_edit_field_html_elements( array_merge(
-                array(
-                    'multiple' => 'multiple',
-                    'id'       => bp_get_the_profile_field_input_name() . '[]',
-                    'name'     => bp_get_the_profile_field_input_name() . '[]',
-                ),
-                $raw_properties
-            ) );
+            $html = $this->get_edit_field_html_elements( $raw_properties );
         ?>
             <label for="<?php bp_the_profile_field_input_name(); ?>"><?php bp_the_profile_field_name(); ?> <?php if ( bp_get_the_profile_field_is_required() ) : ?><?php esc_html_e( '(required)', 'buddypress' ); ?><?php endif; ?></label>
             <?php do_action( bp_get_the_profile_field_errors_action() ); ?>
             <select <?php echo $html; ?>>
+                <option value=""><?php _e('Select...', 'bxcft'); ?></option>
                 <?php bp_the_profile_field_options( "user_id={$user_id}" ); ?>
             </select>
         <?php
@@ -136,33 +122,30 @@ if (!class_exists('Bxcft_Field_Type_MultiSelectCustomPostType'))
 
         public function edit_field_options_html( array $args = array() ) {
             $options        = $this->field_obj->get_children();
-            $posts_selected  = maybe_unserialize(BP_XProfile_ProfileData::get_value_byid( $this->field_obj->id, $args['user_id'] ));
+            $term_selected  = BP_XProfile_ProfileData::get_value_byid( $this->field_obj->id, $args['user_id'] );
 
             $html = '';
             if ($options) {
-                $post_type_selected = $options[0]->name;
+                $taxonomy_selected = $options[0]->name;
                 if ( !empty($_POST['field_' . $this->field_obj->id]) ) {
-                    $new_posts_selected = $_POST['field_' . $this->field_obj->id];
-                    $posts_selected = ( $posts_selected != $new_posts_selected ) ? $new_posts_selected : $posts_selected;
+                    $new_term_selected = (int) $_POST['field_' . $this->field_obj->id];
+                    $term_selected = ( $term_selected != $new_term_selected ) ? $new_term_selected : $term_selected;
                 }
-                // Get posts of custom post type selected.
-                $posts = new WP_Query(array(
-                    'posts_per_page'    => -1,
-                    'post_type'         => $post_type_selected,
-                    'orderby'           => 'title',
-                    'order'             => 'ASC'
+                // Get terms of custom taxonomy selected.
+                $terms = get_terms($taxonomy_selected, array(
+                    'hide_empty' => false
                 ));
-                if ($posts) {
-                    foreach ($posts->posts as $post) {
+                if ($terms) {
+                    foreach ($terms as $term) {
                         $html .= sprintf('<option value="%s"%s>%s</option>',
-                                    $post->ID,
-                                    (!empty($posts_selected) && (in_array($post->ID, $posts_selected)))?'selected="selected"':'',
-                                    $post->post_title);
+                                    $term->term_id,
+                                    ($term_selected==$term->term_id)?' selected="selected"':'',
+                                    $term->name);
                     }
                 }
             }
 
-            echo apply_filters( 'bp_get_the_profile_field_multiselect_custom_post_type', $html, $args['type'], $post_type_selected, $this->field_obj->id );
+            echo apply_filters( 'bp_get_the_profile_field_select_custom_taxonomy', $html, $args['type'], $term_selected, $this->field_obj->id );
         }
 
         /**
@@ -210,54 +193,42 @@ if (!class_exists('Bxcft_Field_Type_MultiSelectCustomPostType'))
             if (!empty($field_value) && !empty($field_id)) {
                 $field = BP_XProfile_Field::get_instance($field_id);
                 if ($field) {
-                    $do_autolink = apply_filters('bxcft_do_autolink',
-                        $field->get_do_autolink());
-                    if ($do_autolink) {
-                        $query_arg = bp_core_get_component_search_query_arg( 'members' );
-                    }
                     $childs = $field->get_children();
                     if (!empty($childs) && isset($childs[0])) {
-                        $post_type_selected = $childs[0]->name;
+                        $taxonomy_selected = $childs[0]->name;
                     }
-                    $aux = '';
-                    $post_ids = explode(',', $field_value);
-                    foreach ($post_ids as $pid) {
-                        $pid = trim($pid);
-                        $post = get_post($pid);
-                        if ($post && $post->post_type == $post_type_selected) {
-                            if (empty($aux)) {
-                                $aux .= '<ul class="list_custom_post_type">';
-                            }
-                            $aux .= '<li>';
-                            if ($do_autolink) {
-                                $search_url = add_query_arg( array(
-                                    $query_arg => urlencode( $pid )
+                    $field_value = trim($field_value);
+                    $term = get_term_by('id', $field_value, $taxonomy_selected);
+                    if ($term && $term->taxonomy == $taxonomy_selected) {
+                        $new_field_value = $term->name;
+                    } else {
+                        $new_field_value = __('--', 'bxcft');
+                    }
+
+                    $do_autolink = apply_filters('bxcft_do_autolink',
+                        $field->get_do_autolink());
+
+                    if ($do_autolink) {
+                        $query_arg = bp_core_get_component_search_query_arg( 'members' );
+                        $search_url = add_query_arg( array(
+                                    $query_arg => urlencode( $field_value )
                                 ), bp_get_members_directory_permalink() );
-                                $aux .= '<a href="' . esc_url( $search_url ) .
-                                    '" rel="nofollow">' . $post->post_title . '</a>';
-                            } else {
-                                $aux .= $post->post_title;
-                            }
-                            $aux .= '</li>';
-                        }
+                        $new_field_value = '<a href="' . esc_url( $search_url ) .
+                                    '" rel="nofollow">' . $new_field_value . '</a>';
                     }
-                    if (!empty($aux)) {
-                        $aux .= '</ul>';
-                    }
-                    $new_field_value = $aux;
                 }
             }
 
             /**
-             * bxcft_multiselect_custom_post_type_display_filter
+             * bxcft_select_custom_taxonomy_display_filter
              *
-             * Use this filter to modify the appearance of Multiselector
-             * Custom Post Type field value.
+             * Use this filter to modify the appearance of Selector
+             * Custom Taxonomy field value.
              * @param  $new_field_value Value of field
              * @param  $field_id Id of field.
              * @return  Filtered value of field.
              */
-            return apply_filters('bxcft_multiselect_custom_post_type_display_filter',
+            return apply_filters('bxcft_select_custom_taxonomy_display_filter',
                 $new_field_value, $field_id);
         }
     }

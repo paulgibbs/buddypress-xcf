@@ -24,5 +24,9 @@ require dirname( __FILE__ ) . '/classes/class-bp-xprofile-field-type-textbox.php
 require dirname( __FILE__ ) . '/classes/class-bp-xprofile-field-type-number.php';
 require dirname( __FILE__ ) . '/classes/class-bp-xprofile-field-type-url.php';
 require dirname( __FILE__ ) . '/classes/class-bp-xprofile-field-type-placeholder.php';
+require dirname( __FILE__ ) . '/classes/class-bp-xprofile-field-type-confirmation.php';
+require dirname( __FILE__ ) . '/classes/class-bp-xprofile-field-type-taxonomy.php';
+require dirname( __FILE__ ) . '/classes/class-bp-xprofile-field-type-color.php';
+require dirname( __FILE__ ) . '/classes/class-bp-xprofile-field-type-slider.php';
 require dirname( __FILE__ ) . '/classes/class-bp-xprofile-meta-query.php';
 require dirname( __FILE__ ) . '/classes/class-bp-xprofile-query.php';

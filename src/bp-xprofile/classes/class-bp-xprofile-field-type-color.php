@@ -2,9 +2,9 @@
 /**
  * Color Type
  */
-if (!class_exists('Bxcft_Field_Type_Color'))
+if (!class_exists('BP_XProfile_Field_Type_Color'))
 {
-    class Bxcft_Field_Type_Color extends BP_XProfile_Field_Type
+    class BP_XProfile_Field_Type_Color extends BP_XProfile_Field_Type
     {
         public function __construct() {
             parent::__construct();

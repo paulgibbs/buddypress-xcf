@@ -150,12 +150,16 @@ function xprofile_update_field_group_position( $field_group_id = 0, $position = 
 function bp_xprofile_get_field_types() {
 	$fields = array(
 		'checkbox'       => 'BP_XProfile_Field_Type_Checkbox',
+		'color'          => 'BP_XProfile_Field_Type_Color',
+		'confirmation'   => 'BP_XProfile_Field_Type_Confirmation',
 		'datebox'        => 'BP_XProfile_Field_Type_Datebox',
 		'multiselectbox' => 'BP_XProfile_Field_Type_Multiselectbox',
 		'number'         => 'BP_XProfile_Field_Type_Number',
 		'url'            => 'BP_XProfile_Field_Type_URL',
 		'radio'          => 'BP_XProfile_Field_Type_Radiobutton',
 		'selectbox'      => 'BP_XProfile_Field_Type_Selectbox',
+		'slider'         => 'BP_XProfile_Field_Type_Slider',
+		'taxonomy'       => 'BP_XProfile_Field_Type_Taxonomy',
 		'textarea'       => 'BP_XProfile_Field_Type_Textarea',
 		'textbox'        => 'BP_XProfile_Field_Type_Textbox',
 	);
