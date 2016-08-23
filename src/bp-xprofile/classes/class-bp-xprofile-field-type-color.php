@@ -20,27 +20,18 @@ class BP_XProfile_Field_Type_Color extends BP_XProfile_Field_Type
 	public function __construct() {
 		parent::__construct();
 
-		$this->name = _x( 'Color (HTML5 field)', 'xprofile field type', 'bxcft' );
+		$this->name = _x( 'Color (HTML5 field)', 'xprofile field type', 'buddypress' );
 
-		$this->set_format( '/^.+$/', 'replace' );
+		// Only letters or digits.
+		$this->set_format( '/^[a-zA-Z0-9]{6}$/', 'replace' );
+
+		/**
+		 * Fires inside __construct() method for BP_XProfile_Field_Type_Color class.
+		 *
+		 * @param BP_XProfile_Field_Type_Color $this Current instance of
+		 *                                            the field type number.
+		 */
 		do_action( 'bp_xprofile_field_type_color', $this );
-	}
-
-	/**
-	 * Output HTML for this field type on the wp-admin Profile Fields screen.
-	 *
-	 * Must be used inside the {@link bp_profile_fields()} template loop.
-	 *
-	 * @param array $raw_properties Optional key/value array of permitted attributes that you want to add.
-	 */
-	public function admin_field_html( array $raw_properties = array() ) {
-		$html = $this->get_edit_field_html_elements( array_merge(
-			array( 'type' => 'color' ),
-			$raw_properties
-		) );
-	?>
-		<input <?php echo esc_html( $html ); ?>>
-	<?php
 	}
 
 	/**
@@ -53,38 +44,52 @@ class BP_XProfile_Field_Type_Color extends BP_XProfile_Field_Type
 	 *                              that you want to add.
 	 */
 	public function edit_field_html( array $raw_properties = array() ) {
+
+		// User_id is a special optional parameter that certain other fields
+		// types pass to {@link bp_the_profile_field_options()}.
 		if ( isset( $raw_properties['user_id'] ) ) {
 			unset( $raw_properties['user_id'] );
 		}
 
-		// HTML5 required attribute.
-		if ( bp_get_the_profile_field_is_required() ) {
-			$raw_properties['required'] = 'required';
-		}
+		$r = bp_parse_args( $raw_properties, array(
+			'type'  => 'color',
+			'value' => bp_get_the_profile_field_edit_value(),
+		) ); ?>
 
-		$html = $this->get_edit_field_html_elements( array_merge(
-			array(
-				'type'  => 'color',
-				'value' => bp_get_the_profile_field_edit_value(),
-			),
-			$raw_properties
-		) );
-	?>
 		<label for="<?php bp_the_profile_field_input_name(); ?>">
 			<?php bp_the_profile_field_name(); ?>
-			<?php if ( bp_get_the_profile_field_is_required() ) : ?>
-				<?php esc_html_e( '(required)', 'buddypress' ); ?>
-			<?php endif; ?>
+			<?php bp_the_profile_field_required_label(); ?>
 		</label>
-		<?php do_action( bp_get_the_profile_field_errors_action() ); ?>
-		<input <?php echo esc_html( $html ); ?>>
-		<script>
-			if (!Modernizr.inputtypes.color) {
-				// No html5 field colorpicker => Calling jscolor.
-				jQuery('input#<?php bp_the_profile_field_input_name() ?>').addClass('color');
-			}
-		</script>
-	<?php
+
+		<?php
+
+		/** This action is documented in bp-xprofile/bp-xprofile-classes */
+		do_action( bp_get_the_profile_field_errors_action() ); ?>
+
+		<input <?php esc_attr( $this->get_edit_field_html_elements( $r ) ); ?>>
+		<?php
+		// TODO: Fallback when input color type is not available.
+	}
+
+	/**
+	 * Output HTML for this field type on the wp-admin Profile Fields screen.
+	 *
+	 * Must be used inside the {@link bp_profile_fields()} template loop.
+	 *
+	 * @param array $raw_properties Optional key/value array of permitted attributes that you want to add.
+	 */
+	public function admin_field_html( array $raw_properties = array() ) {
+		$r = bp_parse_args( $raw_properties, array(
+			'type' => 'color',
+		) ); ?>
+
+		<label for="<?php bp_the_profile_field_input_name(); ?>" class="screen-reader-text">
+		<?php
+			/* translators: accessibility text */
+			esc_html_e( 'Color field', 'buddypress' );
+		?></label>
+		<input <?php esc_attr_e( $this->get_edit_field_html_elements( $r ) ); ?>>
+		<?php
 	}
 
 	/**
