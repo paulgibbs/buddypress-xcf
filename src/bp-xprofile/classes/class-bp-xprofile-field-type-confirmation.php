@@ -243,7 +243,7 @@ class BP_XProfile_Field_Type_Confirmation extends BP_XProfile_Field_Type {
 			</script>
 		';
 
-		echo apply_filters( 'bp_get_the_profile_field_checkbox_acceptance', $html, $args['type'], $this->field_obj->id, $checkbox_acceptance );
+		echo apply_filters( 'bp_get_the_profile_field_confirmation', $html, $args['type'], $this->field_obj->id, $checkbox_acceptance );
 	}
 
 	/**
@@ -300,6 +300,6 @@ class BP_XProfile_Field_Type_Confirmation extends BP_XProfile_Field_Type {
 		 * @param  $field_id Id of field.
 		 * @return  Filtered value of field.
 		 */
-		return apply_filters( 'bxcft_checkbox_acceptance_display_filter', $new_field_value, $field_id );
+		return apply_filters( 'bxcft_confirmation_display_filter', $new_field_value, $field_id );
 	}
 }
