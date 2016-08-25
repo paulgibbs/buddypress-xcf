@@ -31,6 +31,15 @@ class BP_XProfile_Field_Type_Taxonomy extends BP_XProfile_Field_Type
 		$this->supports_options = true;
 
 		$this->set_format( '/^.+$/', 'replace' );
+
+		/**
+		 * Fires inside __construct() method for BP_XProfile_Field_Type_Taxonomy class.
+		 *
+		 * @since 2.7.0
+		 *
+		 * @param BP_XProfile_Field_Type_Taxonomy $this Current instance of
+		 *                                            the field type number.
+		 */
 		do_action( 'bp_xprofile_field_type_select_custom_taxonomy', $this );
 	}
 
@@ -222,6 +231,16 @@ class BP_XProfile_Field_Type_Taxonomy extends BP_XProfile_Field_Type
 			}
 		}
 
+		/**
+		 * Filters the HTML output for an individual field options taxonomy.
+		 *
+		 * @since 2.7.0
+		 *
+		 * @param string $html Text.
+		 * @param object $args['type'] Type of field.
+		 * @param int 	 $term_selected Id of term selected
+		 * @param int    $id       ID of the field object being rendered.
+		 */
 		esc_html_e( apply_filters( 'bp_get_the_profile_field_select_custom_taxonomy',
 		$html, $args['type'], $term_selected, $this->field_obj->id ) );
 	}
@@ -260,6 +279,15 @@ class BP_XProfile_Field_Type_Taxonomy extends BP_XProfile_Field_Type
 			$validated = true;
 		}
 
+		/**
+		 * Filters whether or not field type is a valid format.
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param bool                   $validated Whether or not the field type is valid.
+		 * @param string|array           $values    Value to check against the registered formats.
+		 * @param BP_XProfile_Field_Type $this      Current instance of the BP_XProfile_Field_Type class.
+		 */
 		return (bool) apply_filters( 'bp_xprofile_field_type_is_valid', $validated,
 		$values, $this );
 	}
