@@ -26,7 +26,7 @@ class BP_XProfile_Field_Type_Taxonomy extends BP_XProfile_Field_Type
 		parent::__construct();
 
 		$this->category = _x( 'Multi Fields', 'xprofile field type category', 'buddypress' );
-		$this->name = _x( 'Custom Taxonomy Selector', 'xprofile field type', 'bxcft' );
+		$this->name = _x( 'Custom Taxonomy Selector', 'xprofile field type', 'buddypress' );
 
 		$this->supports_options = true;
 
@@ -116,15 +116,15 @@ class BP_XProfile_Field_Type_Taxonomy extends BP_XProfile_Field_Type
 		style="<?php echo esc_attr( $class ); ?> margin-top: 15px;">
 		<?php if ( ! $taxonomies ) : ?>
 			<h3><?php esc_html_e( 'There is no custom taxonomy. You need to create at
-				least one to use this field.', 'bxcft' ); ?></h3>
+				least one to use this field.', 'buddypress' ); ?></h3>
 		<?php else : ?>
-			<h3><?php esc_html_e( 'Select a custom taxonomy:', 'bxcft' ); ?></h3>
+			<h3><?php esc_html_e( 'Select a custom taxonomy:', 'buddypress' ); ?></h3>
 			<div class="inside">
 				<p>
-					<?php esc_html_e( 'Select a custom taxonomy:', 'bxcft' ); ?>
+					<?php esc_html_e( 'Select a custom taxonomy:', 'buddypress' ); ?>
 					<select name="<?php esc_attr_e( "{$type}_option[1]" ); ?>"
 					id="<?php esc_attr_e( "{$type}_option[1]" ); ?>">
-						<option value=""><?php esc_attr_e( 'Select...', 'bxcft' ); ?></option>
+						<option value=""><?php esc_attr_e( 'Select...', 'buddypress' ); ?></option>
 					<?php foreach ( $taxonomies as $k => $v ) : ?>
 						<option value="<?php esc_attr_e( $k ); ?>"
 						<?php if ( $options[0]->name === $k ) : ?> selected="selected"<?php endif; ?>>
@@ -173,7 +173,7 @@ class BP_XProfile_Field_Type_Taxonomy extends BP_XProfile_Field_Type
 		</label>
 		<?php do_action( bp_get_the_profile_field_errors_action() ); ?>
 		<select <?php esc_html_e( $html ); ?>>
-			<option value=""><?php esc_html_e( 'Select...', 'bxcft' ); ?></option>
+			<option value=""><?php esc_html_e( 'Select...', 'buddypress' ); ?></option>
 			<?php bp_the_profile_field_options( "user_id={$user_id}" ); ?>
 		</select>
 	<?php
@@ -290,35 +290,11 @@ class BP_XProfile_Field_Type_Taxonomy extends BP_XProfile_Field_Type
 				if ( $term && $term->taxonomy === $taxonomy_selected ) {
 					$new_field_value = $term->name;
 				} else {
-					$new_field_value = __( '--', 'bxcft' );
-				}
-
-				$do_autolink = apply_filters( 'bxcft_do_autolink',
-				$field->get_do_autolink() );
-
-				if ( $do_autolink ) {
-					$query_arg = bp_core_get_component_search_query_arg( 'members' );
-					$search_url = add_query_arg( array(
-								$query_arg => urlencode( $field_value ),
-							),
-					bp_get_members_directory_permalink() );
-					$new_field_value = '<a href="' . esc_url( $search_url ) .
-								'" rel="nofollow">' . $new_field_value . '</a>';
+					$new_field_value = __( '--', 'buddypress' );
 				}
 			}
 		}
 
-		/**
-		 * Use this filter to modify the appearance of Selector
-		 * Custom Taxonomy field value.
-		 *
-		 * @since 2.7.0
-		 *
-		 * @param  $new_field_value Value of field
-		 * @param  $field_id Id of field.
-		 * @return  Filtered value of field.
-		 */
-		return apply_filters( 'bxcft_select_custom_taxonomy_display_filter',
-		$new_field_value, $field_id );
+		return $new_field_value;
 	}
 }
