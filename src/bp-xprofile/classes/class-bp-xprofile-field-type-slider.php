@@ -33,6 +33,14 @@ class BP_XProfile_Field_Type_Slider extends BP_XProfile_Field_Type
 
 		$this->set_format( '/^\d+\.?\d*$/', 'replace' );
 
+		/**
+		 * Fires inside __construct() method for BP_XProfile_Field_Type_Slider class.
+		 *
+		 * @since 2.7.0
+		 *
+		 * @param BP_XProfile_Field_Type_Slider $this Current instance of
+		 *                                            the field type number.
+		 */
 		do_action( 'bp_xprofile_field_type_slider', $this );
 	}
 
