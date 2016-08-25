@@ -25,6 +25,7 @@ class BP_XProfile_Field_Type_Taxonomy extends BP_XProfile_Field_Type
 	public function __construct() {
 		parent::__construct();
 
+		$this->category = _x( 'Multi Fields', 'xprofile field type category', 'buddypress' );
 		$this->name = _x( 'Custom Taxonomy Selector', 'xprofile field type', 'bxcft' );
 
 		$this->supports_options = true;
