@@ -25,7 +25,7 @@ class BP_XProfile_Field_Type_Slider extends BP_XProfile_Field_Type
 	public function __construct() {
 		parent::__construct();
 
-		$this->name = __( 'Range input (HTML5 field)', 'bxcft' );
+		$this->name = __( 'Range input (HTML5 field)', 'buddypress' );
 
 		$this->accepts_null_value = true;
 		$this->supports_options = true;
@@ -49,7 +49,7 @@ class BP_XProfile_Field_Type_Slider extends BP_XProfile_Field_Type
 
 		$args = array(
 			'type' => 'range',
-			'class' => 'bxcft-slider',
+			'class' => 'buddypress-slider',
 		);
 
 		$options = $field->get_children( true );
@@ -85,59 +85,41 @@ class BP_XProfile_Field_Type_Slider extends BP_XProfile_Field_Type
 	 *                              that you want to add.
 	 */
 	public function edit_field_html( array $raw_properties = array() ) {
+
+		// User_id is a special optional parameter that certain other fields
+		// types pass to {@link bp_the_profile_field_options()}.
 		if ( isset( $raw_properties['user_id'] ) ) {
 			unset( $raw_properties['user_id'] );
 		}
 
-		// HTML5 required attribute.
-		if ( bp_get_the_profile_field_is_required() ) {
-			$raw_properties['required'] = 'required';
-		}
-
-		$field = new BP_XProfile_Field( bp_get_the_profile_field_id() );
-
-		$args = array(
+		$r = bp_parse_args( $raw_properties, array(
 			'type'  => 'range',
-			'class' => 'bxcft-slider',
 			'value' => bp_get_the_profile_field_edit_value(),
-		);
+		) );
 		$options = $field->get_children( true );
 		if ( $options ) {
 			foreach ( $options as $o ) {
 				if ( strpos( $o->name, 'min_' ) !== false ) {
-					$args['min'] = str_replace( 'min_', '', $o->name );
+					$r['min'] = str_replace( 'min_', '', $o->name );
 				}
 				if ( strpos( $o->name, 'max_' ) !== false ) {
-					$args['max'] = str_replace( 'max_', '', $o->name );
+					$r['max'] = str_replace( 'max_', '', $o->name );
 				}
 			}
 		}
+		?>
 
-		$html = $this->get_edit_field_html_elements( array_merge(
-			$args,
-			$raw_properties
-		) );
+		<label for="<?php bp_the_profile_field_input_name(); ?>">
+			<?php bp_the_profile_field_name(); ?>
+			<?php bp_the_profile_field_required_label(); ?>
+		</label>
 
-		$label = sprintf(
-			'<label for="%s">%s%s</label>',
-			bp_get_the_profile_field_input_name(),
-			bp_get_the_profile_field_name(),
-			( bp_get_the_profile_field_is_required() ) ?
-			' ' . esc_html__( '(required)', 'buddypress' ) : ''
-		);
-		// Label.
-		echo esc_html(
-			apply_filters(
-				'bxcft_field_label', $label, bp_get_the_profile_field_id(),
-				bp_get_the_profile_field_type(), bp_get_the_profile_field_input_name(),
-				bp_get_the_profile_field_name(), bp_get_the_profile_field_is_required()
-			)
-		);
-		// Errors.
-		do_action( bp_get_the_profile_field_errors_action() );
-		// Input.
+		<?php
+
+		/** This action is documented in bp-xprofile/bp-xprofile-classes */
+		do_action( bp_get_the_profile_field_errors_action() ); ?>
 	?>
-		<input <?php echo esc_html( $html ); ?> />
+		<input <?php esc_attr( $this->get_edit_field_html_elements( $r ) ); ?>>
 		<span id="output-field_<?php echo esc_attr( $field->id ); ?>"></span>
 	<?php
 	}
@@ -200,17 +182,17 @@ class BP_XProfile_Field_Type_Slider extends BP_XProfile_Field_Type
 	?>
 		<div id="<?php echo esc_attr( $type ); ?>" class="postbox bp-options-box"
 		style="<?php echo esc_attr( $class ); ?> margin-top: 15px;">
-			<h3><?php esc_html_e( 'Write min and max values.', 'bxcft' ); ?></h3>
+			<h3><?php esc_html_e( 'Write min and max values.', 'buddypress' ); ?></h3>
 			<div class="inside">
 				<p>
 					<label for="<?php echo esc_attr( "{$type}_option1" ); ?>">
-						<?php esc_html_e( 'Minimum:', 'bxcft' ); ?>
+						<?php esc_html_e( 'Minimum:', 'buddypress' ); ?>
 					</label>
 					<input type="text" name="<?php echo esc_attr( "{$type}_option[1]" ); ?>"
 						id="<?php echo esc_attr( "{$type}_option1" ); ?>"
 						value="<?php echo esc_attr( $min ); ?>" />
 					<label for="<?php echo esc_attr( "{$type}_option2" ); ?>">
-						<?php esc_html_e( 'Maximum:', 'bxcft' ); ?>
+						<?php esc_html_e( 'Maximum:', 'buddypress' ); ?>
 					</label>
 					<input type="text" name="<?php echo esc_attr( "{$type}_option[2]" ); ?>"
 						id="<?php echo esc_attr( "{$type}_option2" ); ?>"
@@ -219,8 +201,8 @@ class BP_XProfile_Field_Type_Slider extends BP_XProfile_Field_Type
 			</div>
 		</div>
 		<script>
-			var error_msg_slider = "<?php esc_html_e( 'Min value cannot be bigger than max value.', 'bxcft' ); ?>",
-				error_msg_slider_empty = "<?php esc_html_e( 'You have to fill the two fields.', 'bxcft' ); ?>";
+			var error_msg_slider = "<?php esc_html_e( 'Min value cannot be bigger than max value.', 'buddypress' ); ?>",
+				error_msg_slider_empty = "<?php esc_html_e( 'You have to fill the two fields.', 'buddypress' ); ?>";
 		</script>
 	<?php
 	}
