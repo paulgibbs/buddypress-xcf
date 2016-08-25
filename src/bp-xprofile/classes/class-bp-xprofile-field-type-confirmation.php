@@ -26,7 +26,7 @@ class BP_XProfile_Field_Type_Confirmation extends BP_XProfile_Field_Type {
 		parent::__construct();
 
 		$this->category = _x( 'Single Fields', 'xprofile field type category', 'buddypress' );
-		$this->name = _x( 'Checkbox Acceptance', 'xprofile field type', 'bxcft' );
+		$this->name = _x( 'Checkbox Acceptance', 'xprofile field type', 'buddypress' );
 
 		$this->accepts_null_value   = true;
 		$this->supports_options     = true;
@@ -164,7 +164,7 @@ class BP_XProfile_Field_Type_Confirmation extends BP_XProfile_Field_Type {
 		}
 	?>
 		<div id="<?php echo esc_attr( $type ); ?>" class="postbox bp-options-box" style="<?php echo esc_attr( $class ); ?> margin-top: 15px;">
-			<h3><?php esc_html_e( 'Use this field to write a text that should be displayed beside the checkbox:', 'bxcft' ); ?></h3>
+			<h3><?php esc_html_e( 'Use this field to write a text that should be displayed beside the checkbox:', 'buddypress' ); ?></h3>
 			<div class="inside">
 				<p>
 					<textarea name="<?php echo esc_attr( "{$type}_text" ); ?>"
@@ -243,7 +243,7 @@ class BP_XProfile_Field_Type_Confirmation extends BP_XProfile_Field_Type {
 			</script>
 		';
 
-		echo apply_filters( 'bp_get_the_profile_field_confirmation', $html, $args['type'], $this->field_obj->id, $checkbox_acceptance );
+		esc_html_e( apply_filters( 'bp_get_the_profile_field_confirmation', $html, $args['type'], $this->field_obj->id, $checkbox_acceptance ) );
 	}
 
 	/**
@@ -271,35 +271,10 @@ class BP_XProfile_Field_Type_Confirmation extends BP_XProfile_Field_Type {
 	 * @return string   Value formatted
 	 */
 	public static function display_filter( $field_value, $field_id = '' ) {
-
-		$new_field_value = $field_value;
-
-		if ( '' !== $field_value && ! empty( $field_id ) ) {
-			$field = BP_XProfile_Field::get_instance( $field_id );
-
-			if ( $field ) {
-				$new_field_value = ( 1 === (int) $field_value ) ?
-					__( 'yes', 'bxcft' ) : __( 'no', 'bxcft' );
-
-				$do_autolink = apply_filters( 'bxcft_do_autolink', $field->get_do_autolink() );
-
-				if ( $do_autolink ) {
-					$query_arg = bp_core_get_component_search_query_arg( 'members' );
-					$search_url = add_query_arg( array( $query_arg => urlencode( $field_value ) ), bp_get_members_directory_permalink() );
-					$new_field_value = '<a href="' . esc_url( $search_url ) .
-						'" rel="nofollow">' . $new_field_value . '</a>';
-				}
-			}
+		if ( 1 === (int) $field_value ) {
+			return __( 'yes', 'buddypress' );
 		}
 
-		/**
-		 * Use this filter to modify the appearance of Checkbox Acceptance
-		 * field value.
-		 *
-		 * @param  $new_field_value Value of field
-		 * @param  $field_id Id of field.
-		 * @return  Filtered value of field.
-		 */
-		return apply_filters( 'bxcft_confirmation_display_filter', $new_field_value, $field_id );
+		return __( 'no', 'buddypress' );
 	}
 }
