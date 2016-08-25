@@ -87,29 +87,29 @@ class BP_XProfile_Field_Type_Confirmation extends BP_XProfile_Field_Type {
 	 */
 	public function edit_field_html( array $raw_properties = array() ) {
 
-		// User_id is a special optional parameter that certain other fields
-		// types pass to {@link bp_the_profile_field_options()}.
+		// User_id is a special optional parameter that we pass to
+		// {@link bp_the_profile_field_options()}.
 		if ( isset( $raw_properties['user_id'] ) ) {
+			$user_id = (int) $raw_properties['user_id'];
 			unset( $raw_properties['user_id'] );
+		} else {
+			$user_id = bp_displayed_user_id();
 		}
-
-		$r = bp_parse_args( $raw_properties, array(
-			'type'  => 'color',
-			'value' => bp_get_the_profile_field_edit_value(),
-		) ); ?>
-
-		<label for="<?php bp_the_profile_field_input_name(); ?>">
-			<?php bp_the_profile_field_name(); ?>
-			<?php bp_the_profile_field_required_label(); ?>
-		</label>
-
-		<?php
+		$options = $field->get_children( true );
+        $text = '';
+        foreach ($options as $option) {
+            $text .= rawurldecode($option->name);
+        }
 
 		/** This action is documented in bp-xprofile/bp-xprofile-classes */
 		do_action( bp_get_the_profile_field_errors_action() ); ?>
 
-		<input <?php esc_attr( $this->get_edit_field_html_elements( $r ) ); ?>>
-	<?php
+        <label for="<?php bp_the_profile_field_input_name(); ?>">
+            <input <?php esc_attr( $this->get_edit_field_html_elements( $r ) ); ?>>
+            <?php echo $text; ?>
+        </label>
+
+		<?php
 	}
 
 	/**
