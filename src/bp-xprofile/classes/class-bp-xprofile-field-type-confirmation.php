@@ -96,18 +96,18 @@ class BP_XProfile_Field_Type_Confirmation extends BP_XProfile_Field_Type {
 			$user_id = bp_displayed_user_id();
 		}
 		$options = $field->get_children( true );
-        $text = '';
-        foreach ($options as $option) {
-            $text .= rawurldecode($option->name);
-        }
+		$text = '';
+		foreach ( $options as $option ) {
+			$text .= rawurldecode( $option->name );
+		}
 
 		/** This action is documented in bp-xprofile/bp-xprofile-classes */
 		do_action( bp_get_the_profile_field_errors_action() ); ?>
 
-        <label for="<?php bp_the_profile_field_input_name(); ?>">
-            <input <?php esc_attr( $this->get_edit_field_html_elements( $r ) ); ?>>
-            <?php echo $text; ?>
-        </label>
+		<label for="<?php bp_the_profile_field_input_name(); ?>">
+			<input <?php esc_attr( $this->get_edit_field_html_elements( $r ) ); ?>>
+			<?php esc_html_e( $text ); ?>
+		</label>
 
 		<?php
 	}
