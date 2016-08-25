@@ -32,7 +32,16 @@ class BP_XProfile_Field_Type_Confirmation extends BP_XProfile_Field_Type {
 		$this->supports_options     = true;
 
 		$this->set_format( '/^.+$/', 'replace' );
-		do_action( 'bp_xprofile_field_type_checkbox_acceptance', $this );
+
+		/**
+		 * Fires inside __construct() method for BP_XProfile_Field_Type_Confirmation class.
+		 *
+		 * @since 2.7.0
+		 *
+		 * @param BP_XProfile_Field_Type_Confirmation $this Current instance of
+		 *                                            the field type number.
+		 */
+		do_action( 'bp_xprofile_field_type_confirmation', $this );
 	}
 
 	/**
