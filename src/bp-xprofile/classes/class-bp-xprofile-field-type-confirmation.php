@@ -248,6 +248,16 @@ class BP_XProfile_Field_Type_Confirmation extends BP_XProfile_Field_Type {
 			</script>
 		';
 
+		/**
+		 * Filters the HTML output for an individual field options confirmation.
+		 *
+		 * @since 2.7.0
+		 *
+		 * @param string $html Text.
+		 * @param object $args['type'] Type of field.
+		 * @param int    $id       ID of the field object being rendered.
+		 * @param string $checkbox_acceptance Current value.
+		 */
 		esc_html_e( apply_filters( 'bp_get_the_profile_field_confirmation', $html, $args['type'], $this->field_obj->id, $checkbox_acceptance ) );
 	}
 
