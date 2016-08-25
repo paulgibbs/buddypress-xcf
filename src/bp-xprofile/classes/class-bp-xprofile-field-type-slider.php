@@ -25,6 +25,7 @@ class BP_XProfile_Field_Type_Slider extends BP_XProfile_Field_Type
 	public function __construct() {
 		parent::__construct();
 
+		$this->category = _x( 'Single Fields', 'xprofile field type category', 'buddypress' );
 		$this->name = __( 'Range input (HTML5 field)', 'buddypress' );
 
 		$this->accepts_null_value = true;
