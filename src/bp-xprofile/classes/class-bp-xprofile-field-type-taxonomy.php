@@ -151,28 +151,27 @@ class BP_XProfile_Field_Type_Taxonomy extends BP_XProfile_Field_Type
 	 *                              that you want to add.
 	 */
 	public function edit_field_html( array $raw_properties = array() ) {
-		$user_id = bp_displayed_user_id();
 
+		// User_id is a special optional parameter that we pass to
+		// {@link bp_the_profile_field_options()}.
 		if ( isset( $raw_properties['user_id'] ) ) {
 			$user_id = (int) $raw_properties['user_id'];
 			unset( $raw_properties['user_id'] );
-		}
+		} else {
+			$user_id = bp_displayed_user_id();
+		} ?>
 
-		// HTML5 required attribute.
-		if ( bp_get_the_profile_field_is_required() ) {
-			$raw_properties['required'] = 'required';
-		}
-
-		$html = $this->get_edit_field_html_elements( $raw_properties );
-	?>
 		<label for="<?php bp_the_profile_field_input_name(); ?>">
 			<?php bp_the_profile_field_name(); ?>
-			<?php if ( bp_get_the_profile_field_is_required() ) : ?>
-				<?php esc_html_e( '(required)', 'buddypress' ); ?>
-			<?php endif; ?>
+			<?php bp_the_profile_field_required_label(); ?>
 		</label>
-		<?php do_action( bp_get_the_profile_field_errors_action() ); ?>
-		<select <?php esc_html_e( $html ); ?>>
+
+		<?php
+
+		/** This action is documented in bp-xprofile/bp-xprofile-classes */
+		do_action( bp_get_the_profile_field_errors_action() ); ?>
+
+		<select <?php esc_attr_e( $this->get_edit_field_html_elements( $raw_properties ) ); ?>>
 			<option value=""><?php esc_html_e( 'Select...', 'buddypress' ); ?></option>
 			<?php bp_the_profile_field_options( "user_id={$user_id}" ); ?>
 		</select>
