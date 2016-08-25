@@ -25,7 +25,8 @@ class BP_XProfile_Field_Type_Confirmation extends BP_XProfile_Field_Type {
 	public function __construct() {
 		parent::__construct();
 
-		$this->name             = _x( 'Checkbox Acceptance', 'xprofile field type', 'bxcft' );
+		$this->category = _x( 'Single Fields', 'xprofile field type category', 'buddypress' );
+		$this->name = _x( 'Checkbox Acceptance', 'xprofile field type', 'bxcft' );
 
 		$this->accepts_null_value   = true;
 		$this->supports_options     = true;
