@@ -30,7 +30,7 @@ class BP_XProfile_Field_Type_Confirmation extends BP_XProfile_Field_Type {
 
 		$this->accepts_null_value   = true;
 		$this->supports_options     = true;
-		$this->validation_whitelist = array('1');
+		$this->validation_whitelist = array( '1' );
 
 		$this->set_format( '/^.+$/', 'replace' );
 
@@ -253,32 +253,32 @@ class BP_XProfile_Field_Type_Confirmation extends BP_XProfile_Field_Type {
 	}
 
 	/**
-     * Allow field types to modify submitted values before they are validated.
-     *
-     * In some cases, it may be appropriate for a field type to catch
-     * submitted values and modify them before they are passed to the
-     * is_valid() method. For example, URL validation requires the
-     * 'http://' scheme (so that the value saved in the database is always
-     * a fully-formed URL), but in order to allow users to enter a URL
-     * without this scheme, BP_XProfile_Field_Type_URL prepends 'http://'
-     * when it's not present.
-     *
-     * By default, this is a pass-through method that does nothing. Only
-     * override in your own field type if you need this kind of pre-
-     * validation filtering.
-     *
-     * @since 2.1.0
-     * @since 2.4.0 Added the `$field_id` parameter.
-     *
-     * @param mixed      $field_value Submitted field value.
-     * @param string|int $field_id    Optional. ID of the field.
-     * @return mixed
-     */
-    public static function pre_validate_filter( $field_value, $field_id = '' ) {
-        if (empty($field_value)) {
-            $field_value = '0';
-        }
+	 * Allow field types to modify submitted values before they are validated.
+	 *
+	 * In some cases, it may be appropriate for a field type to catch
+	 * submitted values and modify them before they are passed to the
+	 * is_valid() method. For example, URL validation requires the
+	 * 'http://' scheme (so that the value saved in the database is always
+	 * a fully-formed URL), but in order to allow users to enter a URL
+	 * without this scheme, BP_XProfile_Field_Type_URL prepends 'http://'
+	 * when it's not present.
+	 *
+	 * By default, this is a pass-through method that does nothing. Only
+	 * override in your own field type if you need this kind of pre-
+	 * validation filtering.
+	 *
+	 * @since 2.1.0
+	 * @since 2.4.0 Added the `$field_id` parameter.
+	 *
+	 * @param mixed      $field_value Submitted field value.
+	 * @param string|int $field_id    Optional. ID of the field.
+	 * @return mixed
+	 */
+	public static function pre_validate_filter( $field_value, $field_id = '' ) {
+		if ( empty( $field_value ) ) {
+			$field_value = '0';
+		}
 
-        return $field_value;
-    }
+		return $field_value;
+	}
 }
