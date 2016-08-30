@@ -29,7 +29,7 @@ class BP_XProfile_Field_Type_Color extends BP_XProfile_Field_Type
 		$this->name = _x( 'Color (HTML5 field)', 'xprofile field type', 'buddypress' );
 
 		// Only letters or digits.
-		$this->set_format( '/^[a-zA-Z0-9]{6}$/', 'replace' );
+		$this->set_format( '/^#{1}[a-fA-F0-9]{6}$/', 'replace' );
 
 		/**
 		 * Fires inside __construct() method for BP_XProfile_Field_Type_Color class.
