@@ -256,18 +256,18 @@ class BP_XProfile_Field_Type_Taxonomy extends BP_XProfile_Field_Type
 	 * @return bool True if the value validates
 	 */
 	public function is_valid( $values ) {
-        $taxonomy_to_check = $this->validation_whitelist;
-        $terms = get_terms( array(
-            'taxonomy' => $taxonomy_to_check,
-            'hide_empty' => false,
-            'fields' => 'ids'
-        ) );
-        if ($terms) {
-            $this->validation_whitelist = $terms;
-        }
+		$taxonomy_to_check = $this->validation_whitelist;
+		$terms = get_terms( array(
+			'taxonomy' => $taxonomy_to_check,
+			'hide_empty' => false,
+			'fields' => 'ids',
+		) );
+		if ( $terms ) {
+			$this->validation_whitelist = $terms;
+		}
 
-        return parent::is_valid( $values );
-    }
+		return parent::is_valid( $values );
+	}
 
 	/**
 	 * Modify the appearance of value. Apply autolink if enabled.
