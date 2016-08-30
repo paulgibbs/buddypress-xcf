@@ -30,6 +30,7 @@ class BP_XProfile_Field_Type_Confirmation extends BP_XProfile_Field_Type {
 
 		$this->accepts_null_value   = true;
 		$this->supports_options     = true;
+		$this->validation_whitelist = array('1');
 
 		$this->set_format( '/^.+$/', 'replace' );
 
@@ -212,41 +213,14 @@ class BP_XProfile_Field_Type_Confirmation extends BP_XProfile_Field_Type {
 			$checkbox_acceptance = ( $checkbox_acceptance !== $new_checkbox_acceptance ) ? $new_checkbox_acceptance : $checkbox_acceptance;
 		}
 
-		$html = '<input type="checkbox" name="check_acc_' . bp_get_the_profile_field_input_name() . '" id="check_acc_' . bp_get_the_profile_field_input_name() . '"';
-		if ( 1 === $checkbox_acceptance ) {
+		$html = '<input type="checkbox" name="' . bp_get_the_profile_field_input_name() . '" id="check_acc_' . bp_get_the_profile_field_input_name() . '"';
+		if ( '1' === $checkbox_acceptance ) {
 			$html .= ' checked="checked"';
 		}
 		if ( isset( $args['required'] ) && $args['required'] ) {
 			$html .= ' required="required" aria-required="true"';
 		}
 		$html .= ' value="1" /> ';
-
-		$html .= '<input type="hidden" name="' . bp_get_the_profile_field_input_name().'" id="' . bp_get_the_profile_field_input_name() . '"';
-		if ( 1 === $checkbox_acceptance ) {
-			$html .= ' value="1" /> ';
-		} else {
-			$html .= ' value="0" /> ';
-		}
-		if ( $options ) {
-			foreach ( $options as $option ) {
-				$html .= rawurldecode( $option->name );
-			}
-		}
-
-		// Javascript.
-		$html .= '
-			<script>
-				jQuery(document).ready(function() {
-					jQuery("#check_acc_' . bp_get_the_profile_field_input_name() . '").click(function() {
-						if (jQuery(this).is(":checked")) {
-							jQuery("#' . bp_get_the_profile_field_input_name() . '").val("1");
-						} else {
-							jQuery("#' . bp_get_the_profile_field_input_name() . '").val("0");
-						}
-					});
-				});
-			</script>
-		';
 
 		/**
 		 * Filters the HTML output for an individual field options confirmation.
@@ -262,21 +236,6 @@ class BP_XProfile_Field_Type_Confirmation extends BP_XProfile_Field_Type {
 	}
 
 	/**
-	 * Check the given string against the registered formats for this field type.
-	 *
-	 * This method doesn't support chaining.
-	 *
-	 * @since 2.7.0
-	 *
-	 * @param string|array $values Value to check against the registered formats.
-	 * @return bool True if the value validates
-	 */
-	public function is_valid( $values ) {
-		$this->validation_whitelist = null;
-		return parent::is_valid( $values );
-	}
-
-	/**
 	 * Modify the appearance of value. Apply autolink if enabled.
 	 *
 	 * @since 2.7.0
@@ -286,10 +245,40 @@ class BP_XProfile_Field_Type_Confirmation extends BP_XProfile_Field_Type {
 	 * @return string   Value formatted
 	 */
 	public static function display_filter( $field_value, $field_id = '' ) {
-		if ( 1 === (int) $field_value ) {
+		if ( '1' === $field_value ) {
 			return __( 'yes', 'buddypress' );
 		}
 
 		return __( 'no', 'buddypress' );
 	}
+
+	/**
+     * Allow field types to modify submitted values before they are validated.
+     *
+     * In some cases, it may be appropriate for a field type to catch
+     * submitted values and modify them before they are passed to the
+     * is_valid() method. For example, URL validation requires the
+     * 'http://' scheme (so that the value saved in the database is always
+     * a fully-formed URL), but in order to allow users to enter a URL
+     * without this scheme, BP_XProfile_Field_Type_URL prepends 'http://'
+     * when it's not present.
+     *
+     * By default, this is a pass-through method that does nothing. Only
+     * override in your own field type if you need this kind of pre-
+     * validation filtering.
+     *
+     * @since 2.1.0
+     * @since 2.4.0 Added the `$field_id` parameter.
+     *
+     * @param mixed      $field_value Submitted field value.
+     * @param string|int $field_id    Optional. ID of the field.
+     * @return mixed
+     */
+    public static function pre_validate_filter( $field_value, $field_id = '' ) {
+        if (empty($field_value)) {
+            $field_value = '0';
+        }
+
+        return $field_value;
+    }
 }
