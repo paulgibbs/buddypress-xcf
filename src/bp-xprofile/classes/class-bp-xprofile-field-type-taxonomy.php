@@ -256,41 +256,18 @@ class BP_XProfile_Field_Type_Taxonomy extends BP_XProfile_Field_Type
 	 * @return bool True if the value validates
 	 */
 	public function is_valid( $values ) {
-		$validated = false;
+        $taxonomy_to_check = $this->validation_whitelist;
+        $terms = get_terms( array(
+            'taxonomy' => $taxonomy_to_check,
+            'hide_empty' => false,
+            'fields' => 'ids'
+        ) );
+        if ($terms) {
+            $this->validation_whitelist = $terms;
+        }
 
-		// Some types of field (e.g. multi-selectbox) may have multiple values to check.
-		foreach ( (array) $values as $value ) {
-
-			// Validate the $value against the type's accepted format(s).
-			foreach ( $this->validation_regex as $format ) {
-				if ( 1 === preg_match( $format, $value ) ) {
-					$validated = true;
-					continue;
-
-				} else {
-					$validated = false;
-				}
-			}
-		}
-
-		// Handle field types with accepts_null_value set if $values is an empty array.
-		if ( ! $validated && is_array( $values ) && empty( $values ) &&
-			$this->accepts_null_value ) {
-			$validated = true;
-		}
-
-		/**
-		 * Filters whether or not field type is a valid format.
-		 *
-		 * @since 2.0.0
-		 *
-		 * @param bool                   $validated Whether or not the field type is valid.
-		 * @param string|array           $values    Value to check against the registered formats.
-		 * @param BP_XProfile_Field_Type $this      Current instance of the BP_XProfile_Field_Type class.
-		 */
-		return (bool) apply_filters( 'bp_xprofile_field_type_is_valid', $validated,
-		$values, $this );
-	}
+        return parent::is_valid( $values );
+    }
 
 	/**
 	 * Modify the appearance of value. Apply autolink if enabled.
