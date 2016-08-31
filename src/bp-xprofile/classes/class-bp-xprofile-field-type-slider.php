@@ -227,7 +227,29 @@ class BP_XProfile_Field_Type_Slider extends BP_XProfile_Field_Type
 	 * @return bool True if the value validates
 	 */
 	public function is_valid( $values ) {
-		$this->validation_whitelist = null;
-		return parent::is_valid( $values );
+		$validated = false;
+
+		$min = 0;
+		$max = 0;
+
+		foreach ( $this->validation_whitelist as $range_value ) {
+			if ( strpos( $range_value, 'min_' ) !== false ) {
+				$min = (int) str_replace( 'min_', '', $range_value );
+			} else if ( strpos( $range_value , 'max_' ) !== false ) {
+				$max = (int) str_replace( 'max_', '', $range_value );
+			}
+		}
+
+		$this->validation_whitelist = array();
+
+		foreach ( (array) $values as $value ) {
+			if ( (int) $value >= $min && (int) $value <= $max ) {
+				$validated = true;
+			} else {
+				$validated = false;
+			}
+		}
+
+		return $validated && parent::is_valid( $values );
 	}
 }
